@@ -55,16 +55,16 @@
             <form action="/publish" method="post">
                 <div class="form-group">
                     <label for="title">问题标题（简单扼要）:</label>
-                    <input type="text" class="form-control" id="title" name="title" placeholder="问题标题……">
+                    <input type="text" class="form-control" th:value="${title}" id="title" name="title" placeholder="问题标题……">
                 </div>
                 <div class="form-group">
-                    <label for="title">问题补充 (必填，请参照右侧提示):</label>
-                    <textarea name="description" id="description" class="form-control" cols="30"
+                    <label for="description">问题补充 (必填，请参照右侧提示):</label>
+                    <textarea name="description" id="description" th:text="${description}" class="form-control" cols="30"
                               rows="10"></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="title">添加标签:</label>
-                    <input type="text" class="form-control" id="tag" name="tag" placeholder="输入标签，以，号分隔">
+                    <label for="tag">添加标签:</label>
+                    <input type="text" class="form-control" id="tag" th:value="${tag}" name="tag" placeholder="输入标签，以，号分隔">
                 </div>
 
                 <span class="alert alert-danger" th:text="${error}" th:if="${error != null}"></span>

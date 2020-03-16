@@ -36,6 +36,22 @@ public class PublishController {
             @RequestParam("description") String description,
             HttpServletRequest request,
             Model model){
+        model.addAttribute("title",title);
+        model.addAttribute("description",description);
+        model.addAttribute("tag",tag);
+
+        if (title == null || title.equals("")){
+            model.addAttribute("error","标题不能为空");
+            return "publish";
+        }
+        if (description == null || description.equals("")){
+            model.addAttribute("error","描述不能为空");
+            return "publish";
+        }
+        if (tag == null || tag.equals("")){
+            model.addAttribute("error","tag不能为空");
+            return "publish";
+        }
 
         UserModel userModel = new UserModel();
         Cookie[] cookies = request.getCookies();
