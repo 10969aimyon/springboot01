@@ -3,6 +3,7 @@ package com.Hello.mapper;
 import com.Hello.model.QuestionModel;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -13,6 +14,9 @@ public interface QuestionMapper {
     @Insert("INSERT INTO question(title,description, creator, tag, gmt_create, gmt_modified) VALUES(#{title}, #{description}, #{creator}, #{tag}, #{gmtCreate}, #{gmtModified});")
     void create(QuestionModel question);
 
-    @Select("Select * FROM question")
-    List<QuestionModel> list();
+    @Select("SELECT * FROM question LIMIT #{offset} , #{size};")
+    List<QuestionModel> list(@Param("offset") int offset, @Param("size") int size);
+
+    @Select("SELECT count(1) FROM question")
+    int totalCount();
 }

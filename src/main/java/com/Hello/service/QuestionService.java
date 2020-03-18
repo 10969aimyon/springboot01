@@ -1,6 +1,7 @@
 package com.Hello.service;
 
 
+import com.Hello.dto.PageDTO;
 import com.Hello.dto.QuestionDto;
 import com.Hello.mapper.QuestionMapper;
 import com.Hello.mapper.UserMapper;
@@ -25,8 +26,21 @@ public class QuestionService {
     private UserMapper userMapper;
 
 
-    public List<QuestionDto> list() {
-        List<QuestionModel> questionModelList = questionMapper.list();
+    public PageDTO list(int page, int size) {
+        int totalCount = questionMapper.totalCount();
+        PageDTO pageDTO = new PageDTO();
+        pageDTO.setPage(page, size, totalCount);
+
+        if (page < 1){
+            page = 1;
+        }
+        if (page > pageDTO.getTotalPage()) {
+            page = pageDTO.getTotalPage();
+        }
+
+        int offset = size * (page - 1);
+
+        List<QuestionModel> questionModelList = questionMapper.list(offset, size);
         List<QuestionDto> questionDtoList = new ArrayList<>();
 
         for (QuestionModel questionModel : questionModelList) {
@@ -35,9 +49,12 @@ public class QuestionService {
             BeanUtils.copyProperties(questionModel, questionDto);
             questionDto.setUserModel(user);
             questionDtoList.add(questionDto);
-
         }
-        return questionDtoList;
+        pageDTO.setQuesetions(questionDtoList);
+
+
+
+        return pageDTO;
     }
 
 }
