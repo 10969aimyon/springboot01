@@ -2,7 +2,6 @@ package com.Hello.Controller;
 
 
 import com.Hello.mapper.QuestionMapper;
-import com.Hello.mapper.UserMapper;
 import com.Hello.model.QuestionModel;
 import com.Hello.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +11,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class PublishController {
-
-    @Autowired
-    private UserMapper userMapper;
 
     @Autowired
     private QuestionMapper questionMapper;
@@ -53,20 +48,7 @@ public class PublishController {
             return "publish";
         }
 
-        UserModel userModel = null;
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null && cookies.length != 0) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("token")) {
-                    String token = cookie.getValue();
-                    userModel = userMapper.findByToken(token);
-                    if (userModel != null) {
-                        request.getSession().setAttribute("user", userModel);
-                    }
-                    break;
-                }
-            }
-        }
+        UserModel userModel = (UserModel) request.getSession().getAttribute("user");
         if (userModel == null){
             model.addAttribute("error","用户未登陆");
             return "publish";

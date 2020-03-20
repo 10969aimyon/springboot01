@@ -105,6 +105,5 @@ public class PageDTO {
             showEndPage = true;
         }
 
-        System.out.println(this);
     }
 }
