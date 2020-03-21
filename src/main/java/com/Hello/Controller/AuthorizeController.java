@@ -3,13 +3,11 @@ package com.Hello.Controller;
 
 import com.Hello.dto.AccessTokenDto;
 import com.Hello.dto.GithubUser;
-import com.Hello.mapper.UserMapper;
-import com.Hello.model.UserModel;
+import com.Hello.model.User;
 import com.Hello.provider.GithubProvider;
 import com.Hello.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -53,14 +51,14 @@ public class AuthorizeController {
 
         if (githubUser != null){
 
-            UserModel userModel = new UserModel();
+            User user = new User();
             String token = UUID.randomUUID().toString();
-            userModel.setToken(token);
-            userModel.setName(githubUser.getName());
-            userModel.setAccountId(String.valueOf(githubUser.getId()));
-            userModel.setAvatarUrl(githubUser.getAvatar_url());
-            userModel.setBio(githubUser.getBio());
-            userService.createOrUpdate(userModel);
+            user.setToken(token);
+            user.setName(githubUser.getName());
+            user.setAccountId(String.valueOf(githubUser.getId()));
+            user.setAvatarUrl(githubUser.getAvatar_url());
+            user.setBio(githubUser.getBio());
+            userService.createOrUpdate(user);
             response.addCookie(new Cookie("token",token));
             return "redirect:/";
         }else {

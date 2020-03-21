@@ -1,7 +1,7 @@
 package com.Hello.dto;
 
 
-import com.Hello.model.UserModel;
+import com.Hello.model.User;
 import lombok.Data;
 
 @Data
@@ -16,5 +16,5 @@ public class QuestionDto {
     private String tag;
     private long gmtCreate;
     private long gmtModified;
-    private UserModel userModel;
+    private User user;
 }

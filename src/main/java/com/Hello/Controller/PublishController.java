@@ -2,9 +2,8 @@ package com.Hello.Controller;
 
 
 import com.Hello.dto.QuestionDto;
-import com.Hello.mapper.QuestionMapper;
-import com.Hello.model.QuestionModel;
-import com.Hello.model.UserModel;
+import com.Hello.model.Question;
+import com.Hello.model.User;
 import com.Hello.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,7 +30,6 @@ public class PublishController {
         model.addAttribute("tag",question.getTag());
         model.addAttribute("id",question.getId());
 
-
         return "publish";
     }
 
@@ -45,7 +43,7 @@ public class PublishController {
             @RequestParam(value = "title", required = false) String title,
             @RequestParam(value = "tag", required = false) String tag,
             @RequestParam(value = "description", required = false) String description,
-            @RequestParam(value = "id", required = false) int id,
+            @RequestParam(value = "id", required = false) Integer id,
             HttpServletRequest request,
             Model model){
         model.addAttribute("title",title);
@@ -65,19 +63,22 @@ public class PublishController {
             return "publish";
         }
 
-        UserModel userModel = (UserModel) request.getSession().getAttribute("user");
-        if (userModel == null){
+        User user = (User) request.getSession().getAttribute("user");
+        if (user == null){
             model.addAttribute("error","用户未登陆");
             return "publish";
         }
 
-        QuestionModel question = new QuestionModel();
+        Question question = new Question();
         question.setTitle(title);
         question.setTag(tag);
         question.setDescription(description);
-        question.setCreator(userModel.getId());
+        question.setCreator(user.getId());
         question.setId(id);
         questionService.createOrUpdate(question);
         return "redirect:/";
     }
 }
+
+
+

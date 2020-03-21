@@ -16,7 +16,7 @@
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
             <h4><span th:text="${question.title}"></span></h4>
             <span class="text-desc">
-                作者：<span th:text="${question.userModel.name}"></span> |
+                作者：<span th:text="${question.user.name}"></span> |
                 发布时间：<span th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd HH:mm')}"></span> |
                 阅读数： <span th:text="${question.viewCount}"></span>
             </span>
@@ -35,12 +35,13 @@
                     <div class="media-left">
                         <a href="#">
                             <img class="media-object img-circle"
-                                 th:src="${question.userModel.avatarUrl}">
+                                 th:src="${question.user.avatarUrl}">
                         </a>
                     </div>
                     <div class="media-body">
+
                         <h5 class="media-heading">
-                            <span th:text="${question.userModel.name}"></span>
+                            <span th:text="${question.user.name}"></span>
                         </h5>
                     </div>
                 </div>

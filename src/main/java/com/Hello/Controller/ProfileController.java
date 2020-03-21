@@ -1,7 +1,7 @@
 package com.Hello.Controller;
 
 import com.Hello.dto.PageDTO;
-import com.Hello.model.UserModel;
+import com.Hello.model.User;
 import com.Hello.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,8 +29,8 @@ public class ProfileController {
                           HttpServletRequest request,
                           @RequestParam(name = "page", defaultValue = "1") int page){
 
-       UserModel userModel = (UserModel) request.getSession().getAttribute("user");
-        if (userModel == null){
+       User user = (User) request.getSession().getAttribute("user");
+        if (user == null){
             return "redirect:/";
         }
 
@@ -44,7 +44,7 @@ public class ProfileController {
             model.addAttribute("sectionName","最新回复");
         }
 
-        PageDTO pageDto = questionService.list(userModel.getId(), page, size);
+        PageDTO pageDto = questionService.list(user.getId(), page, size);
         model.addAttribute("pageDTO", pageDto);
 
 
