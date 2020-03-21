@@ -2,10 +2,7 @@ package com.Hello.mapper;
 
 import com.Hello.dto.QuestionDto;
 import com.Hello.model.QuestionModel;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -31,4 +28,7 @@ public interface QuestionMapper {
 
     @Select("SELECT * FROM question WHERE id = #{id};")
     QuestionModel getById(@Param("id") Integer questionId);
+
+    @Update("UPDATE question SET title = #{title}, description = #{description}, tag = #{tag}, gmt_modified = #{gmtModified} WHERE id = #{id};")
+    void update(QuestionModel question);
 }

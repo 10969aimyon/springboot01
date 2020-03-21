@@ -12,5 +12,5 @@ public class UserModel {
     private long gmtCreate;
     private long gmtModified;
     private String avatarUrl;
-
+    private String bio;
 }

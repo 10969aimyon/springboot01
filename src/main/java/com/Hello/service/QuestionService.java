@@ -7,7 +7,6 @@ import com.Hello.mapper.QuestionMapper;
 import com.Hello.mapper.UserMapper;
 import com.Hello.model.QuestionModel;
 import com.Hello.model.UserModel;
-import org.h2.engine.User;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -96,5 +95,16 @@ public class QuestionService {
         questionDto.setUserModel(userModel);
 
         return questionDto;
+    }
+
+    public void createOrUpdate(QuestionModel question) {
+        if (question.getId() != null){
+            question.setGmtModified(System.currentTimeMillis());
+            questionMapper.update(question);
+        }else {
+            question.setGmtCreate(System.currentTimeMillis());
+            question.setGmtModified(question.getGmtCreate());
+            questionMapper.create(question);
+        }
     }
 }
