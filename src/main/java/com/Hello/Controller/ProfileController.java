@@ -1,4 +1,4 @@
-package com.Hello.Controller;
+package com.Hello.controller;
 
 import com.Hello.dto.PageDTO;
 import com.Hello.model.User;

@@ -5,6 +5,7 @@ import com.Hello.dto.PageDTO;
 import com.Hello.dto.QuestionDto;
 import com.Hello.exception.CustomizeErrorCode;
 import com.Hello.exception.CustomizeException;
+import com.Hello.mapper.QuestionExtMapper;
 import com.Hello.mapper.QuestionMapper;
 import com.Hello.mapper.UserMapper;
 import com.Hello.model.Question;
@@ -24,6 +25,9 @@ public class QuestionService {
 
     @Autowired
     private QuestionMapper questionMapper;
+
+    @Autowired
+    private QuestionExtMapper questionExtMapper;
 
     @Autowired
     private UserMapper userMapper;
@@ -138,13 +142,8 @@ public class QuestionService {
     }
 
     public void incView(Integer questionId) {
-        Question question = questionMapper.selectByPrimaryKey(questionId);
-        Question questionUpdate = new Question();
-        questionUpdate.setViewCount(question.getViewCount()+1);
-
-        QuestionExample example = new QuestionExample();
-        example.createCriteria()
-                .andIdEqualTo(questionId);
-        questionMapper.updateByExampleSelective(questionUpdate, example);
+        Question question = new Question();
+        question.setId(questionId);
+        questionExtMapper.incView(question);
     }
 }

@@ -1,4 +1,4 @@
-package com.Hello.Controller;
+package com.Hello.controller;
 
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
