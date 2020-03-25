@@ -51,6 +51,8 @@ public class AuthorizeController {
 
         if (githubUser != null){
 
+            // 老用户每次重新登陆都要在数据库中更新token
+            // 新用户直接insert就可以
             User user = new User();
             String token = UUID.randomUUID().toString();
             user.setToken(token);
@@ -59,6 +61,7 @@ public class AuthorizeController {
             user.setAvatarUrl(githubUser.getAvatar_url());
             user.setBio(githubUser.getBio());
             userService.createOrUpdate(user);
+            // 在客户端浏览器中添加cookie
             response.addCookie(new Cookie("token",token));
             return "redirect:/";
         }else {
@@ -67,6 +70,7 @@ public class AuthorizeController {
         }
     }
 
+    // 登出路由
     @GetMapping("/logout")
     public String logout(HttpServletRequest request,
                           HttpServletResponse response){
@@ -76,6 +80,7 @@ public class AuthorizeController {
         Cookie cookie = new Cookie("token",null);
         cookie.setMaxAge(0);
         response.addCookie(cookie);
+
         return "redirect:/";
     }
 }

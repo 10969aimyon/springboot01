@@ -3,11 +3,14 @@ package com.Hello.service;
 
 import com.Hello.dto.PageDTO;
 import com.Hello.dto.QuestionDto;
+import com.Hello.enums.CommentTypeEnum;
 import com.Hello.exception.CustomizeErrorCode;
 import com.Hello.exception.CustomizeException;
+import com.Hello.mapper.CommentMapper;
 import com.Hello.mapper.QuestionExtMapper;
 import com.Hello.mapper.QuestionMapper;
 import com.Hello.mapper.UserMapper;
+import com.Hello.model.CommentExample;
 import com.Hello.model.Question;
 import com.Hello.model.QuestionExample;
 import com.Hello.model.User;
@@ -31,6 +34,9 @@ public class QuestionService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private CommentMapper commentMapper;
 
 
     public PageDTO list(int page, int size) {
@@ -112,6 +118,14 @@ public class QuestionService {
         BeanUtils.copyProperties(question, questionDto);
         user = userMapper.selectByPrimaryKey(question.getCreator());
         questionDto.setUser(user);
+
+        // 查找评论数
+        CommentExample commentExample = new CommentExample();
+        commentExample.createCriteria()
+                .andParentIdEqualTo(questionId)
+                .andTypeEqualTo(CommentTypeEnum.QUESTION.getType());
+        int commentCount = (int)commentMapper.countByExample(commentExample);
+        questionDto.setCommentCount(commentCount);
 
         return questionDto;
     }
