@@ -19,6 +19,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,8 +56,9 @@ public class QuestionService {
 
         int offset = size * (page - 1);
 
-
-        List<Question> questions = questionMapper.selectByExampleWithBLOBsWithRowbounds(new QuestionExample(), new RowBounds(offset, size));
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.setOrderByClause("gmt_create desc");
+        List<Question> questions = questionMapper.selectByExampleWithBLOBsWithRowbounds(questionExample, new RowBounds(offset, size));
         List<QuestionDto> questionDtoList = new ArrayList<>();
 
         for (Question question : questions) {
@@ -88,11 +91,7 @@ public class QuestionService {
         }
 
         int offset = size * (page - 1);
-        QuestionExample example = new QuestionExample();
-        example.createCriteria()
-                .andCreatorEqualTo(id);
-        List<Question> questions = questionMapper.selectByExampleWithBLOBsWithRowbounds(new QuestionExample(), new RowBounds(offset, size));
-
+        List<Question> questions = questionMapper.selectByExampleWithBLOBsWithRowbounds(questionExample, new RowBounds(offset, size));
         List<QuestionDto> questionDtoList = new ArrayList<>();
 
         for (Question question : questions) {
@@ -159,5 +158,29 @@ public class QuestionService {
         Question question = new Question();
         question.setId(questionId);
         questionExtMapper.incView(question);
+    }
+
+    public List<Question> selectRelated(QuestionDto questionDto) {
+        if (questionDto.getTag().equals("") || questionDto.getTag() == null){
+            return new ArrayList<>();
+        }
+        String tags = questionDto.getTag().replace(",","|");
+
+        Question question = new Question();
+        question.setId(questionDto.getId());
+        question.setTag(tags);
+
+        List<Question> questions = questionExtMapper.selectRelated(question);
+        if (questions.size()==0){
+            return new ArrayList<>();
+        }
+        return questions;
+    }
+
+    public List<Question> selectMostPop() {
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.setOrderByClause("view_count desc");
+        List<Question> questions = questionMapper.selectByExampleWithBLOBsWithRowbounds(questionExample, new RowBounds(0, 5));
+        return questions;
     }
 }

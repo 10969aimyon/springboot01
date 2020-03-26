@@ -3,6 +3,7 @@ package com.Hello.controller;
 import com.Hello.dto.CommentListDTO;
 import com.Hello.dto.QuestionDto;
 import com.Hello.enums.CommentTypeEnum;
+import com.Hello.model.Question;
 import com.Hello.service.CommentService;
 import com.Hello.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,8 @@ public class QuestionController {
                            Model model){
 
         QuestionDto questionDto = questionService.getByQuestionID(questionId);
+        // 查找相关问题
+        List<Question> relatedQuestions = questionService.selectRelated(questionDto);
         // 累加阅读数
         questionService.incView(questionId);
         // 返回评论列表
@@ -36,6 +39,7 @@ public class QuestionController {
         commentListDTOS = commentService.getCommentListDTOListById(questionId, CommentTypeEnum.QUESTION);
         model.addAttribute("question",questionDto);
         model.addAttribute("commentListDTOS",commentListDTOS);
+        model.addAttribute("relatedQuestions",relatedQuestions);
         return "question";
     }
 }
