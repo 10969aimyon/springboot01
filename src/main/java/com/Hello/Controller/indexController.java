@@ -2,7 +2,9 @@ package com.Hello.controller;
 
 
 import com.Hello.dto.PageDTO;
+import com.Hello.dto.QuestionDto;
 import com.Hello.model.Question;
+import com.Hello.model.User;
 import com.Hello.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +30,7 @@ public class indexController {
                         Model model,
                         @RequestParam(name = "page", defaultValue = "1") int page){
 
-        PageDTO currentPage = questionService.list(page, size);
+        PageDTO<QuestionDto> currentPage = questionService.list(page, size);
         model.addAttribute("currentPage", currentPage);
         // 热门问题
         List<Question> questions = questionService.selectMostPop();

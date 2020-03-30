@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
-
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,10 +41,10 @@ public class QuestionService {
     private CommentMapper commentMapper;
 
 
-    public PageDTO list(int page, int size) {
+    public PageDTO<QuestionDto> list(int page, int size) {
         int totalCount = (int)questionMapper.countByExample(new QuestionExample());
 
-        PageDTO pageDTO = new PageDTO();
+        PageDTO<QuestionDto> pageDTO = new PageDTO<>();
         pageDTO.setPage(page, size, totalCount);
 
         if (page < 1){
@@ -68,19 +68,17 @@ public class QuestionService {
             questionDto.setUser(user);
             questionDtoList.add(questionDto);
         }
-        pageDTO.setQuesetions(questionDtoList);
-
-
-
+        pageDTO.setData(questionDtoList);
         return pageDTO;
     }
 
-    public PageDTO list(Integer id, Integer page, Integer size){
+    public PageDTO<QuestionDto> list(Integer id, Integer page, Integer size){
         QuestionExample questionExample = new QuestionExample();
         questionExample.createCriteria()
                 .andCreatorEqualTo(id);
         int totalCount = (int) questionMapper.countByExample(questionExample);
-        PageDTO pageDTO = new PageDTO();
+
+        PageDTO<QuestionDto> pageDTO = new PageDTO<>();
         pageDTO.setPage(page, size, totalCount);
 
         if (page < 1){
@@ -101,7 +99,7 @@ public class QuestionService {
             questionDto.setUser(user);
             questionDtoList.add(questionDto);
         }
-        pageDTO.setQuesetions(questionDtoList);
+        pageDTO.setData(questionDtoList);
 
         return pageDTO;
 
@@ -182,5 +180,19 @@ public class QuestionService {
         questionExample.setOrderByClause("view_count desc");
         List<Question> questions = questionMapper.selectByExampleWithBLOBsWithRowbounds(questionExample, new RowBounds(0, 5));
         return questions;
+    }
+
+    public int getPublishById(HttpServletRequest request){
+
+        User user = (User) request.getSession().getAttribute("user");
+        if (user == null){
+            throw new CustomizeException(CustomizeErrorCode.NO_LOGIN);
+        }
+
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.createCriteria()
+                .andCreatorEqualTo(user.getId());
+        int count = (int) questionMapper.countByExample(questionExample);
+        return count;
     }
 }

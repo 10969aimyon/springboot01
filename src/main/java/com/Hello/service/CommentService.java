@@ -3,12 +3,11 @@ package com.Hello.service;
 
 import com.Hello.dto.CommentListDTO;
 import com.Hello.enums.CommentTypeEnum;
+import com.Hello.enums.NotificationStatusEnum;
+import com.Hello.enums.NotificationTypeEnum;
 import com.Hello.exception.CustomizeErrorCode;
 import com.Hello.exception.CustomizeException;
-import com.Hello.mapper.CommentMapper;
-import com.Hello.mapper.QuestionExtMapper;
-import com.Hello.mapper.QuestionMapper;
-import com.Hello.mapper.UserMapper;
+import com.Hello.mapper.*;
 import com.Hello.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +27,8 @@ public class CommentService {
     private QuestionMapper questionMapper;
     @Autowired
     private QuestionExtMapper questionExtMapper;
+    @Autowired
+    private NotificationMapper notificationMapper;
 
     // 此注解将方法变成事务，如果后面有抛异常，前面的操作不会执行
     @Transactional
@@ -50,6 +51,8 @@ public class CommentService {
                 throw new CustomizeException(CustomizeErrorCode.COMMENT_NOT_FOUND);
             }
             commentMapper.insert(comment);
+            // 创建通知对象插入到数据库
+            createNotify(comment, dbComment.getCommentator(), NotificationTypeEnum.REPLY_COMMENT);
 
         }else{
             // 如果type类型为对问题下的评论（1）
@@ -62,7 +65,23 @@ public class CommentService {
             commentMapper.insert(comment);
             // 这里使用了Ext自定义的Mapper，以应对并发操作
             questionExtMapper.incComment(question);
+
+            // 通知
+            createNotify(comment, question.getCreator(), NotificationTypeEnum.REPLY_QUESTION);
         }
+    }
+
+    // 创建通知
+    private void createNotify(Comment comment, int reciver, NotificationTypeEnum n) {
+        // 添加notification对象
+        Notification notification = new Notification();
+        notification.setGmtCreate(System.currentTimeMillis());
+        notification.setType(n.getType());
+        notification.setStatus(NotificationStatusEnum.UNREAD.getStatus());
+        notification.setOuterId(comment.getParentId());
+        notification.setNotifier(comment.getCommentator());
+        notification.setReceiver(reciver);
+        notificationMapper.insert(notification);
     }
 
     public List<CommentListDTO> getCommentListDTOListById(Integer id, CommentTypeEnum type) {

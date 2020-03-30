@@ -6,6 +6,7 @@ import com.Hello.dto.ResultDTO;
 import com.Hello.enums.CommentTypeEnum;
 import com.Hello.exception.CustomizeErrorCode;
 import com.Hello.exception.CustomizeException;
+import com.Hello.mapper.NotificationMapper;
 import com.Hello.model.Comment;
 import com.Hello.model.CommentExample;
 import com.Hello.model.User;
@@ -22,6 +23,8 @@ public class CommentContorller {
 
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private NotificationMapper notificationMapper;
 
     // 发布一级评论
     @ResponseBody

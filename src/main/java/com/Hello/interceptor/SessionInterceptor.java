@@ -1,8 +1,13 @@
 package com.Hello.interceptor;
 
+import com.Hello.dto.CountDTO;
+import com.Hello.enums.NotificationStatusEnum;
 import com.Hello.mapper.UserMapper;
+import com.Hello.model.QuestionExample;
 import com.Hello.model.User;
 import com.Hello.model.UserExample;
+import com.Hello.service.NotificationService;
+import com.Hello.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -20,6 +25,10 @@ public class SessionInterceptor implements HandlerInterceptor {
 
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private QuestionService questionService;
+    @Autowired
+    private NotificationService notificationService;
 
 
     @Override
@@ -44,6 +53,11 @@ public class SessionInterceptor implements HandlerInterceptor {
                     // 如果有这样的user，那就setSession吧
                     if (users.size() != 0) {
                         request.getSession().setAttribute("user", users.get(0));
+                        // count
+                        CountDTO countDTO = new CountDTO(
+                                questionService.getPublishById(request), notificationService.getUnreadCount(request)
+                        );
+                        request.getSession().setAttribute("count",countDTO);
                     }
                     break;
                 }

@@ -1,10 +1,12 @@
 package com.Hello.controller;
 
 
+import com.Hello.cache.tagCache;
 import com.Hello.dto.QuestionDto;
 import com.Hello.model.Question;
 import com.Hello.model.User;
 import com.Hello.service.QuestionService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,12 +31,13 @@ public class PublishController {
         model.addAttribute("description",question.getDescription());
         model.addAttribute("tag",question.getTag());
         model.addAttribute("id",question.getId());
-
+        model.addAttribute("tags", tagCache.get());
         return "publish";
     }
 
     @GetMapping("/publish")
-    public String publish(){
+    public String publish(Model model){
+        model.addAttribute("tags", tagCache.get());
         return "publish";
     }
 
@@ -60,6 +63,12 @@ public class PublishController {
         }
         if (tag == null || tag.equals("")){
             model.addAttribute("error","tag不能为空");
+            return "publish";
+        }
+
+        String invalid = tagCache.filterInvalid(tag);
+        if (StringUtils.isNotBlank(invalid)) {
+            model.addAttribute("error", "输入非法标签:" + invalid);
             return "publish";
         }
 

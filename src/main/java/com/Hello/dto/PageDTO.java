@@ -8,14 +8,14 @@ import java.util.Collections;
 import java.util.List;
 
 @Data
-public class PageDTO {
+public class PageDTO<T> {
     // 页面总数
     private int totalPage;
     // 当前页面问题列表
-    private List<QuestionDto> quesetions;
+    private List<T> data;
     // 当前页面
     private int currentPage;
-    // 页面总数
+    // 要显示的页面列表
     private List<Integer> pages = new ArrayList<>();
     // 判断页面内容
     private boolean showNextPage;

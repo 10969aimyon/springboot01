@@ -28,10 +28,10 @@
             <h2><span class="glyphicon glyphicon-list" aria-hidden="true"></span> 发现</h2>
             <hr>
 
-            <div class="media" th:each="question : ${currentPage.getQuesetions()}">
+            <div class="media" th:each="question : ${currentPage.data}">
                 <div class="media-left">
                     <a href="#">
-                        <img class="media-object img-rounded"
+                        <img class="media-object .img-rounded"
                              th:src="${question.user.avatarUrl}" height="60px">
                     </a>
                 </div>
@@ -85,9 +85,9 @@
             <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <h4>演出信息</h4>
-                <img class="img-thumbnail question-wechat" src="/images/aimyon.jpg">
+                <img class="img-thumbnail question-wechat" src="images/aimyon.jpg">
                 <hr>
-                <img class="img-thumbnail question-wechat" src="/images/aimyon2.jpg">
+                <img class="img-thumbnail question-wechat" src="images/aimyon2.jpg">
             </div>
         </div>
 
