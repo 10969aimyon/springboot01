@@ -1,5 +1,6 @@
 package com.Hello.mapper;
 
+import com.Hello.dto.QuestionQueryDTO;
 import com.Hello.model.Question;
 import com.Hello.model.QuestionExample;
 import java.util.List;
@@ -134,4 +135,5 @@ public interface QuestionMapper {
      * @mbg.generated Thu Mar 26 22:56:46 CST 2020
      */
     int updateByPrimaryKey(Question record);
+
 }

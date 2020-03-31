@@ -1,6 +1,8 @@
 package com.Hello.controller;
 
 import com.Hello.dto.FileDTO;
+import com.Hello.exception.CustomizeErrorCode;
+import com.Hello.exception.CustomizeException;
 import com.Hello.provider.UcloudProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,15 +28,16 @@ public class FileController {
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         MultipartFile file = multipartRequest.getFile("editormd-image-file");
         try {
-            ucloudProvider.upload(file.getInputStream(), file.getContentType(), file.getOriginalFilename());
+            String url = ucloudProvider.upload(file.getInputStream(), file.getContentType(), file.getOriginalFilename());
+            FileDTO fileDTO = new FileDTO();
+            fileDTO.setSuccess(1);
+            fileDTO.setUrl(url);
+            return fileDTO;
         }catch (IOException e){
             e.printStackTrace();
-            System.out.println("IO error!!!!!");
+            throw new CustomizeException(CustomizeErrorCode.UPLOAD_FAIL);
         }
-        FileDTO fileDTO = new FileDTO();
-        fileDTO.setSuccess(1);
-        fileDTO.setUrl("/images/aimyon.jpg");
-        return fileDTO;
+
     }
 
 }

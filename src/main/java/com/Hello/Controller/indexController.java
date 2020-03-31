@@ -26,15 +26,16 @@ public class indexController {
     private QuestionService questionService;
 
     @GetMapping("/")
-    public String index(HttpServletRequest request,
-                        Model model,
-                        @RequestParam(name = "page", defaultValue = "1") int page){
+    public String index(Model model,
+                        @RequestParam(name = "page", defaultValue = "1") int page,
+                        @RequestParam(name = "search", required = false) String search){
 
-        PageDTO<QuestionDto> currentPage = questionService.list(page, size);
+        PageDTO<QuestionDto> currentPage = questionService.list(search, page, size);
         model.addAttribute("currentPage", currentPage);
         // 热门问题
         List<Question> questions = questionService.selectMostPop();
         model.addAttribute("mostPopQuestion",questions);
+        model.addAttribute("search",search);
         return "index";
     }
 }

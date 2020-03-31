@@ -73,6 +73,10 @@ public class CommentService {
 
     // 创建通知
     private void createNotify(Comment comment, int reciver, NotificationTypeEnum n) {
+        // 如果通知的创建者和接受者一样，就不创建通知
+        if (comment.getCommentator() == reciver){
+            return;
+        }
         // 添加notification对象
         Notification notification = new Notification();
         notification.setGmtCreate(System.currentTimeMillis());
@@ -114,7 +118,6 @@ public class CommentService {
                     .andTypeEqualTo(CommentTypeEnum.COMMENT.getType());
             int count = (int)commentMapper.countByExample(example);
             comment.setCount(count);
-
             commentListDTOS.add(new CommentListDTO(comment, user));
         }
         return commentListDTOS;

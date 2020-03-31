@@ -8,6 +8,8 @@ import cn.ucloud.ufile.auth.UfileObjectLocalAuthorization;
 import cn.ucloud.ufile.bean.PutObjectResultBean;
 import cn.ucloud.ufile.exception.UfileClientException;
 import cn.ucloud.ufile.exception.UfileServerException;
+import com.Hello.exception.CustomizeErrorCode;
+import com.Hello.exception.CustomizeException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import java.io.InputStream;
@@ -22,8 +24,17 @@ public class UcloudProvider {
     @Value("${ufile.private-key}")
     private String privateKey;
 
+    @Value("${ufile.bucket-name}")
+    private String bucketName;
 
+    @Value("${ufile.region}")
+    private String region;
 
+    @Value("${ufile.suffix}")
+    private String suffix;
+
+    @Value("${ufile.expires}")
+    private int expires;
 
     public String upload(InputStream inputStream, String mimeType, String fileName){
         // 起名字
@@ -33,7 +44,7 @@ public class UcloudProvider {
             generaterFileName = UUID.randomUUID().toString()+"."+filePaths[filePaths.length - 1];
             System.out.println(generaterFileName);
         }else {
-            return null;
+            throw new CustomizeException(CustomizeErrorCode.UPLOAD_FAIL);
         }
 
 
@@ -42,23 +53,30 @@ public class UcloudProvider {
             ObjectAuthorization objectAuthorization = new UfileObjectLocalAuthorization(
                     publicKey, privateKey);
             // 配置
-            ObjectConfig config = new ObjectConfig("cn-bj", "ufileos.com");
+            ObjectConfig config = new ObjectConfig(region, suffix);
 
             PutObjectResultBean response = UfileClient.object(objectAuthorization, config)
                     .putObject(inputStream, mimeType)
                     .nameAs(generaterFileName)
-                    .toBucket("aimyon")
+                    .toBucket(bucketName)
                     .setOnProgressListener((bytesWritten, contentLength) -> {
                     })
                     .execute();
+            if (response != null && response.getRetCode() == 0){
+                String url = UfileClient.object(objectAuthorization, config)
+                        .getDownloadUrlFromPrivateBucket(generaterFileName, bucketName, expires)
+                        .createUrl();
+                return url;
+            }else {
+                throw new CustomizeException(CustomizeErrorCode.UPLOAD_FAIL);
+            }
         } catch (UfileClientException e) {
             e.printStackTrace();
-            return null;
+            throw new CustomizeException(CustomizeErrorCode.UPLOAD_FAIL);
         } catch (UfileServerException e) {
             e.printStackTrace();
-            return null;
+            throw new CustomizeException(CustomizeErrorCode.UPLOAD_FAIL);
         }
 
-        return "";
     }
 }
