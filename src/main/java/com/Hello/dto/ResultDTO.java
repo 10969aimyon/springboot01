@@ -3,7 +3,6 @@ package com.Hello.dto;
 import com.Hello.exception.CustomizeErrorCode;
 import com.Hello.exception.CustomizeException;
 import lombok.Data;
-import org.h2.api.ErrorCode;
 
 @Data
 public class ResultDTO<T> {

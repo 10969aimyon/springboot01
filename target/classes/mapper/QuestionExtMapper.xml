@@ -22,7 +22,7 @@
     update QUESTION
     set
     VIEW_COUNT =  VIEW_COUNT + 1
-    where id = #{id}
+    where id = #{id};
   </update>
 
   <update id="incComment" parameterType="com.Hello.model.Question">
@@ -30,18 +30,18 @@
     update QUESTION
     set
     COMMENT_COUNT =  COMMENT_COUNT + 1
-    where id = #{id}
+    where id = #{id};
   </update>
 
   <select id="selectRelated" parameterType="com.Hello.model.Question" resultMap="BaseResultMap">
-    select * from QUESTION where id != #{id} and tag regexp #{tag}
+    select * from QUESTION where id != #{id} and tag regexp #{tag};
   </select>
 
   <select id="countBySearch" parameterType="com.Hello.dto.QuestionQueryDTO" resultType="java.lang.Integer">
     select count(*) from QUESTION
     <where>
       <if test="search != null">
-        and title regexp #{search}
+        and title regexp #{search};
       </if>
     </where>
   </select>
@@ -54,7 +54,7 @@
       </if>
     </where>
     order by gmt_create desc
-    limit #{page}, #{size}
+    limit #{page}, #{size};
   </select>
 
 

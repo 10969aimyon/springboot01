@@ -55,7 +55,6 @@ public class QuestionService {
 
         QuestionQueryDTO questionQueryDTO = new QuestionQueryDTO();
         questionQueryDTO.setSearch(search);
-
         int totalCount = questionExtMapper.countBySearch(questionQueryDTO);
         PageDTO<QuestionDto> pageDTO = new PageDTO<>();
         pageDTO.setPage(page, size, totalCount);
@@ -67,7 +66,7 @@ public class QuestionService {
             page = pageDTO.getTotalPage();
         }
 
-        int offset = size * (page - 1);
+        int offset = page < 1 ? 0:size * (page - 1);
 
         questionQueryDTO.setSize(size);
         questionQueryDTO.setPage(offset);
@@ -101,7 +100,7 @@ public class QuestionService {
             page = pageDTO.getTotalPage();
         }
 
-        int offset = size * (page - 1);
+        int offset = page<1 ? 0 : size * (page - 1);
         List<Question> questions = questionMapper.selectByExampleWithBLOBsWithRowbounds(questionExample, new RowBounds(offset, size));
         List<QuestionDto> questionDtoList = new ArrayList<>();
 
